@@ -1,12 +1,27 @@
-def parseCommandString(commandString):
+import socket
+
+def tokenizeCommandString(commandString):
     if(not commandString): return None
     if(commandString[0] == '/'):
-        word = ''
-        for letter in commandString[1:]:
-            if(letter == ' '):
-                return word
-            word += letter
-        return word
+        return commandString[1:].split(' ')
     else:
-        print("Invalid command! Start commands with a /")
+        print("Invalid command! Start commands with a /")   
+
+def commandSwitch(command):
+    action = command[0]
+    parameters = command[1:]
     
+    print(action)
+    print(parameters)
+    if command == "join":
+        return
+    if command == "leave":
+        return
+    if command == "msg":
+        return
+    if command == "register":
+        return
+    if command == "all":
+        return
+    if command == "?":
+        return

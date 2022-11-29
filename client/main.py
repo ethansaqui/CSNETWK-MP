@@ -10,4 +10,5 @@ while(True):
     commandString = None
     while commandString == None: 
         commandString = input('Enter a command:\n')
-    command = commands.parseCommandString(commandString)
+    command = commands.tokenizeCommandString(commandString)
+    commands.commandSwitch(command)
