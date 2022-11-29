@@ -1,9 +1,12 @@
 import socket
 
 class Commands:
-    def __init__(self, address, port):
-        self.address = address
-        self.port = port
+    address = None
+    port = None
+    
+    def __init__(self, client, bufferSize):
+        self.bufferSize = bufferSize
+        self.client = client
     
     def tokenizeCommandString(self, commandString):
         if(not commandString): return None
@@ -46,17 +49,20 @@ class Commands:
             
         if action == "?":
             self.commandList()
-
         
     def joinCommand(self, address, port):
+        Commands.address = address
+        Commands.port = int(port)
+        print(f"Connected to: {Commands.address} on port {Commands.port}")
         return
 
     def msgCommand(self, handle, message):
-        print(message)
-        print(handle)
+        return
 
-    def allCommand(self, msg):
-        print(msg)
+    def allCommand(self, message):
+        print(self.address) 
+        print(self.port)
+        self.client.sendto(str.encode(message, 'utf-8'), (Commands.address, Commands.port))
         return
 
     def commandList(self):

@@ -11,10 +11,9 @@ print("Server is listening...")
 
 
 message, address = server.recvfrom(bufferSize)
-clientMessage = "Client : {}".format(message)
+clientMessage = f"Client : {message.decode('utf-8')}"
 clientAddress = "Client Address : {}".format(address)
 
 print(clientMessage)
 print(clientAddress)
     
-server.close()
