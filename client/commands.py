@@ -64,6 +64,11 @@ class Commands:
         print(self.port)
         self.client.sendto(str.encode(message, 'utf-8'), (Commands.address, Commands.port))
         return
+    
+    def leaveCommand(self): 
+        Commands.address = None
+        Commands.port = None
+        return
 
     def commandList(self):
         print("""+==========================+=============================================+======================+
