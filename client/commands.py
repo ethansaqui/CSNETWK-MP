@@ -1,4 +1,9 @@
 import socket
+# TODO
+# Check if server exists on joinCommand
+# Implement other functions
+# Server functions as well
+# I can't specify them because I honestly have no idea
 
 class Commands:
     address = None
@@ -51,17 +56,27 @@ class Commands:
             self.commandList()
         
     def joinCommand(self, address, port):
-        Commands.address = address
-        Commands.port = int(port)
-        print(f"Connected to: {Commands.address} on port {Commands.port}")
-        return
+        if(self.testConnection(address, port) == 0):
+            Commands.address = address
+            Commands.port = int(port)
+            print(f"Connected to: {Commands.address} on port {Commands.port}")
+            return
+    
+    def testConnection(self, address, port):
+        try:
+            result = self.client.connect_ex((address, int(port)))
+            return result
+        except socket.timeout as exc:
+            print("Server timed out")
+        except socket.error as exc:
+            print(f"Address failed as:{exc}")
+        except:
+            print("Something went wrong in connecting to the server")
 
     def msgCommand(self, handle, message):
         return
 
     def allCommand(self, message):
-        print(self.address) 
-        print(self.port)
         self.client.sendto(str.encode(message, 'utf-8'), (Commands.address, Commands.port))
         return
     

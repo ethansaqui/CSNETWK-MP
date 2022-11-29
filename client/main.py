@@ -4,7 +4,7 @@ import commands
 bufferSize = 1024
 
 client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
+client.settimeout(5)
 while(True):
     commandString = None
     while commandString == None: 
