@@ -37,6 +37,9 @@ class Commands:
                 self.joinCommand(parameters[0], parameters[1])
                 
         if action == "leave":
+            print(f"Disconnected from: {Commands.address} {Commands.port}")
+            Commands.address = None
+            Commands.port = None
             return
         
         if action == "msg":
