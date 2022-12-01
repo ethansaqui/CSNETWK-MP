@@ -11,7 +11,7 @@ print("Server is listening...")
 
 while(True): 
     message, clientAddress = server.recvfrom(bufferSize)
-    clientMessage = message.decode('utf-8')
+    clientMessage = message.decode()
     
     # Acknowledge client connection
     server.sendto("".encode(), clientAddress) 

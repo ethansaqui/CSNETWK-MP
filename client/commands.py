@@ -74,7 +74,7 @@ class Commands:
     
         try:
             self.client.settimeout(5)
-            self.client.sendto("Requesting connection...".encode(), destinationServer)
+            self.client.sendto("Client connected".encode(), destinationServer)
             self.client.recvfrom(self.bufferSize)
             
             Commands.address = address
@@ -93,8 +93,9 @@ class Commands:
         return
 
     def allCommand(self, message):
+        jsonMessage = str({'message' : message}).encode()
         try:
-            self.client.sendto(message.encode(), (Commands.address, Commands.port))
+            self.client.sendto(jsonMessage, (Commands.address, Commands.port))
         except socket.error as error:
             print(f"Message Send Error: {error}")
         return
