@@ -1,9 +1,4 @@
 import socket
-# TODO
-# Check if server exists on joinCommand
-# Implement other functions
-# Server functions as well
-# I can't specify them because I honestly have no idea
 
 class Commands:
     address = None
@@ -91,7 +86,10 @@ class Commands:
             
         return
 
-    def msgCommand(self, handle, message):
+    def msgCommand(self, messageReceiver, message):
+        return
+    
+    def registerCommand(self, clientName):
         return
 
     def allCommand(self, message):
