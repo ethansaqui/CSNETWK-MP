@@ -27,6 +27,8 @@ class Commands:
         return False
 
     def commandSwitch(self, command):
+        if command == None:
+            return
         action = command[0]
         parameters = command[1:]
         
@@ -55,23 +57,24 @@ class Commands:
         if action == "?":
             self.commandList()
         
+        return
+        
     def joinCommand(self, address, port):
-        if(self.testConnection(address, port) == 0):
+        destinationServer = (address, int(port))
+        print(destinationServer)
+    
+        try:
+            self.client.settimeout(5)
+            self.client.sendto("Requesting connection...".encode(), destinationServer)
+            self.client.recvfrom(self.bufferSize)
+            
             Commands.address = address
             Commands.port = int(port)
-            print(f"Connected to: {Commands.address} on port {Commands.port}")
-            return
-    
-    def testConnection(self, address, port):
-        try:
-            result = self.client.connect_ex((address, int(port)))
-            return result
-        except socket.timeout as exc:
-            print("Server timed out")
+            print(f"Successfully connected to: {Commands.address} on port {Commands.port}")
         except socket.error as exc:
-            print(f"Address failed as:{exc}")
-        except:
-            print("Something went wrong in connecting to the server")
+            print(f"Connection Error: {exc}")
+            
+        return
 
     def msgCommand(self, handle, message):
         return

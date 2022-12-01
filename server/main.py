@@ -10,10 +10,12 @@ server.bind((localAddress, localPort))
 print("Server is listening...")
 
 while(True): 
-    message, address = server.recvfrom(bufferSize)
-    clientMessage = f"Client : {message.decode('utf-8')}"
-    clientAddress = "Client Address : {}".format(address)
-
+    message, clientAddress = server.recvfrom(bufferSize)
+    clientMessage = message.decode('utf-8')
+    
+    # Acknowledge client connection
+    server.sendto("".encode(), clientAddress) 
+    
     print(clientMessage)
     print(clientAddress)
     
