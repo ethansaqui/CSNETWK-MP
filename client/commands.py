@@ -8,10 +8,12 @@ import socket
 class Commands:
     address = None
     port = None
+    isConnected = False
     
     def __init__(self, client, bufferSize):
         self.bufferSize = bufferSize
         self.client = client
+        self.commandList = ['join', 'leave', 'msg', 'register', 'all', '?']
     
     def tokenizeCommandString(self, commandString):
         if(not commandString): return None
@@ -29,6 +31,11 @@ class Commands:
     def commandSwitch(self, command):
         if command == None:
             return
+        
+        if command[0] not in self.commandList:
+            print("Invalid command!")
+            return
+        
         action = command[0]
         parameters = command[1:]
         
@@ -40,25 +47,29 @@ class Commands:
             print(f"Disconnected from: {Commands.address} {Commands.port}")
             Commands.address = None
             Commands.port = None
+            Commands.isConnected = False
             return
         
-        if action == "msg":
-            handle = command[1]
-            message = ' '.join(command[2:])
-            parameters = [handle, message]
-            if(self.checkParams("msg", len(parameters), 2)):
-                self.msgCommand(parameters[0], parameters[1])
+        if Commands.isConnected:
+            if action == "msg":
+                receiverName = command[1]
+                message = ' '.join(command[2:])
+                parameters = [receiverName, message]
+                if(self.checkParams("msg", len(parameters), 2)):
+                    self.msgCommand(parameters[0], parameters[1])
+                    
+            if action == "register":
+                if(self.checkParams("register", len(parameters), 1)):
+                    return
                 
-        if action == "register":
-            if(self.checkParams("register", len(parameters), 1)):
-                return
-            
-        if action == "all":
-            msg = ' '.join(command[1:])
-            self.allCommand(msg)
+            if action == "all":
+                msg = ' '.join(command[1:])
+                self.allCommand(msg)
+        else:
+            print("Connect to a server first!")
             
         if action == "?":
-            self.commandList()
+            self.commandHelp()
         
         return
         
@@ -73,6 +84,7 @@ class Commands:
             
             Commands.address = address
             Commands.port = int(port)
+            Commands.isConnected = True
             print(f"Successfully connected to: {Commands.address} on port {Commands.port}")
         except socket.error as exc:
             print(f"Connection Error: {exc}")
@@ -85,13 +97,8 @@ class Commands:
     def allCommand(self, message):
         self.client.sendto(str.encode(message, 'utf-8'), (Commands.address, Commands.port))
         return
-    
-    def leaveCommand(self): 
-        Commands.address = None
-        Commands.port = None
-        return
 
-    def commandList(self):
+    def commandHelp(self):
         print("""+==========================+=============================================+======================+
     |         Command          |                 Description                 |     Sample Usage     |
     +==========================+=============================================+======================+
