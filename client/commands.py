@@ -63,8 +63,8 @@ class Commands:
                     return
                 
             if action == "all":
-                msg = ' '.join(command[1:])
-                self.allCommand(msg)
+                message = ' '.join(command[1:])
+                self.allCommand(message)
         else:
             print("Connect to a server first!")
             
@@ -86,8 +86,8 @@ class Commands:
             Commands.port = int(port)
             Commands.isConnected = True
             print(f"Successfully connected to: {Commands.address} on port {Commands.port}")
-        except socket.error as exc:
-            print(f"Connection Error: {exc}")
+        except socket.error as error:
+            print(f"Connection Error: {error}")
             
         return
 
@@ -95,7 +95,10 @@ class Commands:
         return
 
     def allCommand(self, message):
-        self.client.sendto(str.encode(message, 'utf-8'), (Commands.address, Commands.port))
+        try:
+            self.client.sendto(message.encode(), (Commands.address, Commands.port))
+        except socket.error as error:
+            print(f"Message Send Error: {error}")
         return
 
     def commandHelp(self):
