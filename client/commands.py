@@ -8,7 +8,7 @@ class Commands:
     def __init__(self, client, bufferSize):
         self.bufferSize = bufferSize
         self.client = client
-        self.commandList = ['join', 'leave', 'msg', 'register', 'all', '?']
+        self.commandList = ['join', 'leave', 'msg', 'register', 'all', '?', 'kill']
     
     def tokenizeCommandString(self, commandString):
         if(not commandString): return None
@@ -60,26 +60,41 @@ class Commands:
             if action == "all":
                 message = ' '.join(command[1:])
                 self.allCommand(message)
+            
+            #FOR DEBUG PURPOSES ONLY, REMOVE AFTER
+            if action == "kill":
+                print(Commands.address)
+                print(Commands.port)
+                jsonMessage = {
+                    "command" : "kill"
+                }
+                self.client.sendto(str(jsonMessage).encode(), (Commands.address, int(Commands.port)))
         else:
             print("Connect to a server first!")
             
         if action == "?":
             self.commandHelp()
-        
+            
+
         return
         
     def joinCommand(self, address, port):
         destinationServer = (address, int(port))
     
         try:
+            jsonMessage = {
+                "command": "join",
+                "message": "requesting connection"
+            }
             self.client.settimeout(5)
-            self.client.sendto(str({"join" : "requesting connection..."}).encode(), destinationServer)
-            self.client.recvfrom(self.bufferSize)
+            self.client.sendto(str(jsonMessage).encode(), destinationServer)
+            message, serverAddress = self.client.recvfrom(self.bufferSize)
             
+            print(message.decode())
             Commands.address = address
             Commands.port = int(port)
             Commands.isConnected = True
-            print(f"Successfully connected to: {Commands.address} on port {Commands.port}")
+            
         except socket.error as error:
             print(f"Connection Error: {error}")
             
