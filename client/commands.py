@@ -90,6 +90,7 @@ class Commands:
         return
     
     def registerCommand(self, clientName):
+        
         return
 
     def allCommand(self, message):
@@ -101,7 +102,7 @@ class Commands:
         return
 
     def commandHelp(self):
-        print("""+==========================+=============================================+======================+
+        print("""    +==========================+=============================================+======================+
     |         Command          |                 Description                 |     Sample Usage     |
     +==========================+=============================================+======================+
     | /join <server_ip> <port> | Connect to a server with IP and Port        | /join 127.0.0.1 5000 |
