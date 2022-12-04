@@ -70,11 +70,10 @@ class Commands:
         
     def joinCommand(self, address, port):
         destinationServer = (address, int(port))
-        print(destinationServer)
     
         try:
             self.client.settimeout(5)
-            self.client.sendto("Client connected".encode(), destinationServer)
+            self.client.sendto(str({"join" : "requesting connection..."}).encode(), destinationServer)
             self.client.recvfrom(self.bufferSize)
             
             Commands.address = address
@@ -94,7 +93,7 @@ class Commands:
         return
 
     def allCommand(self, message):
-        jsonMessage = str({'message' : message}).encode()
+        jsonMessage = str({'all' : message}).encode()
         try:
             self.client.sendto(jsonMessage, (Commands.address, Commands.port))
         except socket.error as error:
