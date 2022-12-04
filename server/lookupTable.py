@@ -17,7 +17,8 @@ class lookupTable:
     
     def addHandle(self, addressPort, handle):
         client = self.getClientFromAddressPort(addressPort)
-        if client != None:
+        isExist = self.getClientFromHandle(handle)
+        if client != None and handle != client["handle"] and isExist == False:
             client["handle"] = handle
         else:
             return False

@@ -43,14 +43,13 @@ class serverUtilities:
             serverUtilities.lookupTable.addClient(clientAddress)
         
         jsonMessage = {
-            "server" : f"You have successfully connected to {self.localAddress} {self.localPort}"
+            "command" : "join",
+            "message" : f"You have successfully connected to {self.localAddress} {self.localPort}"
         }
         self.sendJsonMessage(jsonMessage, clientAddress)
         return
     
     def serverAll(self, jsonCommand):
-        
-        
         message = jsonCommand["message"]
         jsonMessage = {
             "command" : "all",
@@ -61,7 +60,19 @@ class serverUtilities:
         return
     
     def serverRegister(self, jsonCommand, clientAddress):
-        if(serverUtilities.lookupTable.addHandle(clientAddress, jsonCommand["handle"])):
+        handle = jsonCommand["handle"]
+        if(serverUtilities.lookupTable.addHandle(clientAddress, handle)):
+            jsonMessage = {
+                "command" : "register",
+                "message" : f"Successful registration! Welcome {handle}"
+            }
+            self.sendJsonMessage(jsonMessage, clientAddress)
             return
+        print("failure")
+        jsonMessage = {
+            "command" : "register",
+            "message" : f"Failure to register under handle \'{handle}\'"
+        }
+        self.sendJsonMessage(jsonMessage, clientAddress)
         return
     

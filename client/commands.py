@@ -92,9 +92,7 @@ class Commands:
             }
             self.client.settimeout(5)
             self.sendJsonMessage(jsonMessage, destinationServer)
-            message, serverAddress = self.client.recvfrom(self.bufferSize)
             
-            print(message.decode())
             Commands.address = address
             Commands.port = int(port)
             Commands.isConnected = True
