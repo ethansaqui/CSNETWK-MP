@@ -59,6 +59,7 @@ class Commands:
                     
             if action == "register":
                 if(self.checkParams("register", len(parameters), 1)):
+                    self.registerCommand(parameters[0])
                     return
                 
             if action == "all":
@@ -106,7 +107,12 @@ class Commands:
     def msgCommand(self, messageReceiver, message):
         return
     
-    def registerCommand(self, clientName):
+    def registerCommand(self, handle):
+        jsonMessage = {
+            "command" : "register",
+            "handle" : handle
+        }
+        self.sendJsonMessage(jsonMessage, (Commands.address, Commands.port))
         return
 
     def allCommand(self, message):

@@ -1,6 +1,8 @@
 import socket
+import lookupTable
 
 class serverUtilities:
+    lookupTable = lookupTable.lookupTable()
     
     def __init__(self, localAddress, localPort, bufferSize, server):
         self.localAddress = localAddress
@@ -25,7 +27,10 @@ class serverUtilities:
             self.serverJoin(clientAddress)
             
         if command == "all":
-            self.serverAll(jsonMessage, clientAddress)
+            self.serverAll(jsonCommand, clientAddress)
+            
+        if command == "register":
+            self.serverRegister(jsonCommand, clientAddress)
         
         # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
         if command == "kill":
@@ -34,11 +39,29 @@ class serverUtilities:
         return True
             
     def serverJoin(self, clientAddress):
-        # insert code to check register lookup table
-        # if in lookup has registered name, set user as the name
+        if not serverUtilities.lookupTable.getClientFromAddressPort(clientAddress):
+            serverUtilities.lookupTable.addClient(clientAddress)
         
         jsonMessage = {
             "server" : f"You have successfully connected to {self.localAddress} {self.localPort}"
         }
         self.sendJsonMessage(jsonMessage, clientAddress)
         return
+    
+    def serverAll(self, jsonCommand):
+        
+        
+        message = jsonCommand["message"]
+        jsonMessage = {
+            "command" : "all",
+            "message" : f"{message}"
+        }
+        
+        # TODO insert code to send the message to all clients in the server
+        return
+    
+    def serverRegister(self, jsonCommand, clientAddress):
+        if(serverUtilities.lookupTable.addHandle(clientAddress, jsonCommand["handle"])):
+            return
+        return
+    
