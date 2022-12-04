@@ -10,6 +10,10 @@ class Commands:
         self.client = client
         self.commandList = ['join', 'leave', 'msg', 'register', 'all', '?', 'kill']
     
+    def sendJsonMessage(self, jsonMessage, serverAddress):
+        self.client.sendto(str(jsonMessage).encode(), serverAddress)
+        return
+    
     def tokenizeCommandString(self, commandString):
         if(not commandString): return None
         if(commandString[0] == '/'):
@@ -84,10 +88,9 @@ class Commands:
         try:
             jsonMessage = {
                 "command": "join",
-                "message": "requesting connection"
             }
             self.client.settimeout(5)
-            self.client.sendto(str(jsonMessage).encode(), destinationServer)
+            self.sendJsonMessage(jsonMessage, destinationServer)
             message, serverAddress = self.client.recvfrom(self.bufferSize)
             
             print(message.decode())
@@ -104,13 +107,15 @@ class Commands:
         return
     
     def registerCommand(self, clientName):
-        
         return
 
     def allCommand(self, message):
-        jsonMessage = str({'all' : message}).encode()
+        jsonMessage = {
+            "command" : "all",
+            "message" : f"{message}"
+        }
         try:
-            self.client.sendto(jsonMessage, (Commands.address, Commands.port))
+            self.sendJsonMessage(jsonMessage, (Commands.address, Commands.port))
         except socket.error as error:
             print(f"Message Send Error: {error}")
         return

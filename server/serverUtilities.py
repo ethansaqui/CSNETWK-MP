@@ -23,7 +23,11 @@ class serverUtilities:
         
         if command == "join":
             self.serverJoin(clientAddress)
+            
+        if command == "all":
+            self.serverAll(jsonMessage, clientAddress)
         
+        # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
         if command == "kill":
             return False
             
