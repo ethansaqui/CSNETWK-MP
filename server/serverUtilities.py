@@ -51,10 +51,12 @@ class serverUtilities:
     
     def serverAll(self, jsonCommand):
         message = jsonCommand["message"]
+        client_list = serverUtilities.lookupTable.getAllClients()
         jsonMessage = {
             "command" : "all",
             "message" : f"{message}"
         }
+        self.sendJsonMessage(jsonMessage, client_list)
         
         # TODO insert code to send the message to all clients in the server
         return

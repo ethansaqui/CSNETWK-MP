@@ -40,3 +40,9 @@ class lookupTable:
                 return client
         return None
     
+    def getAllClients(self):
+        client_list = []
+        for client in lookupTable.table:
+            client_list.append(client)
+        return client_list
+    
