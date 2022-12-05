@@ -79,7 +79,10 @@ class Commands:
             
         if action == "?":
             self.commandHelp()
-            
+            return
+        
+        serverResonse, serverAddress = self.receiveFromServer()
+        print(serverResonse)
 
         return
         
@@ -124,6 +127,10 @@ class Commands:
             print(f"Message Send Error: {error}")
         return
 
+    def receiveFromServer(self):
+        message, address = self.client.recvfrom(self.bufferSize)
+        return message, address
+    
     def commandHelp(self):
         print("""    +==========================+=============================================+======================+
     |         Command          |                 Description                 |     Sample Usage     |

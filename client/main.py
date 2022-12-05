@@ -15,6 +15,5 @@ while(True):
     clientCommands = commands.Commands(client, bufferSize)
     command = clientCommands.tokenizeCommandString(commandString)
     clientCommands.commandSwitch(command)
+ 
     
-    message, serverAddress = client.recvfrom(bufferSize) 
-    print(message.decode())
