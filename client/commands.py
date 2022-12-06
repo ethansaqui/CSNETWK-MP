@@ -44,10 +44,7 @@ class Commands:
                 self.joinCommand(parameters[0], parameters[1])
                 
         if action == "leave":
-            print(f"Disconnected from: {Commands.address} {Commands.port}")
-            Commands.address = None
-            Commands.port = None
-            Commands.isConnected = False
+            self.leaveCommand()
             return
         
         if Commands.isConnected:
@@ -103,7 +100,17 @@ class Commands:
             
         return
 
-    #ADDED
+    def leaveCommand(self):
+        
+        jsonMessage = {
+            "command" : "leave",
+        }
+        self.sendJsonMessage(jsonMessage, (Commands.address, Commands.port))
+        Commands.address = None
+        Commands.port = None
+        Commands.isConnected = False
+    
+    
     def msgCommand(self, messageReceiver, message):
         jsonMessage = {
             "command" : "msg",
@@ -168,8 +175,13 @@ class Commands:
         if command == "msg":
             return "[Private]"
         
+        if command == "leave":
+            return "[Server Exited]"
+        
         if command == "error":
             return "[Error]"
+        
+        
         return True           
     
     def commandHelp(self):

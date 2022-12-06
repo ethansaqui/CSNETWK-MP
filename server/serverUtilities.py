@@ -52,13 +52,21 @@ class serverUtilities:
         
         #ADDED    
         if command == "msg":
-            self.serverMsg(jsonCommand, clientAddress)    
+            self.serverMsg(jsonCommand, clientAddress)
+            
+        if command == "leave":
+            self.serverLeave(clientAddress)
         
         # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
         if command == "kill":
             return False
             
         return True
+    
+    def serverLeave(self, clientAddress):
+        self.sendClientMessage("leave", "Connection has been closed, どうも", clientAddress)
+        serverUtilities.lookupTable.removeClient(clientAddress)
+        return
             
     def serverJoin(self, clientAddress):
         cmd = "join"

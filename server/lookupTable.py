@@ -25,6 +25,13 @@ class lookupTable:
         print(lookupTable.table)
         return True
     
+    def removeClient(self, addressPort):
+        for client in lookupTable.table:
+            if(client["address"] == addressPort):
+                print(client)
+                lookupTable.table.remove(client)
+        return None
+    
     def getClientFromAddressPort(self, addressPort):
         for client in lookupTable.table:
             if(client["address"] == addressPort):
