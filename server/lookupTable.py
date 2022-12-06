@@ -40,9 +40,10 @@ class lookupTable:
                 return client
         return None
     
-    def getAllClients(self):
+    def getOtherClients(self, addressPort):
         client_list = []
         for client in lookupTable.table:
-            client_list.append(client)
+            if (client["address"] != addressPort):
+                client_list.append(client["address"])
         return client_list
     

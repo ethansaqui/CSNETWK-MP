@@ -11,8 +11,19 @@ class serverUtilities:
         self.server = server
     
     def sendJsonMessage(self, jsonMessage, clientAddress):
+        
         self.server.sendto(str(jsonMessage).encode(), clientAddress)
         return
+
+    def sendJsonMessageAll(self, jsonMessage, clientAddress_List):
+        i = 0
+        while i < len(clientAddress_List):
+            print( "doing this ")
+            print(clientAddress_List[i])
+            self.server.sendto(str(jsonMessage).encode(), clientAddress_List[i])
+            i+= 1
+        return
+    
     
     def parseJsonCommand(self, jsonCommand, clientAddress):
         command = jsonCommand['command']
@@ -49,14 +60,15 @@ class serverUtilities:
         self.sendJsonMessage(jsonMessage, clientAddress)
         return
     
-    def serverAll(self, jsonCommand):
+    def serverAll(self, jsonCommand, clientAddress):
         message = jsonCommand["message"]
-        client_list = serverUtilities.lookupTable.getAllClients()
+        client_list = serverUtilities.lookupTable.getOtherClients(clientAddress)
+        print(client_list)
         jsonMessage = {
             "command" : "all",
             "message" : f"{message}"
         }
-        self.sendJsonMessage(jsonMessage, client_list)
+        self.sendJsonMessageAll(jsonMessage, client_list)
         
         # TODO insert code to send the message to all clients in the server
         return
