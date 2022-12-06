@@ -7,13 +7,21 @@ bufferSize = 1024
 client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 client.settimeout(5)
 
+clientRunning = True
 
-while(True):
+while(clientRunning):
+
+    clientCommands = commands.Commands(client, bufferSize)
     
     commandString = None
-    while commandString == None: 
-        commandString = input('')
-    clientCommands = commands.Commands(client, bufferSize)
+    while commandString == None:
+        try:
+            commandString = input('')
+        except KeyboardInterrupt:
+            clientCommands.leaveCommand()
+            clientRunning = False
+            break
+
     command = clientCommands.tokenizeCommandString(commandString)
     clientCommands.commandSwitch(command)
     
@@ -21,4 +29,8 @@ while(True):
     thread.daemon = True
     thread.start()
     
+    if clientRunning == False:
+        break
     
+
+client.close()

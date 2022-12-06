@@ -19,7 +19,6 @@ continueRunning = True
 
 
 while(continueRunning):
-    print("back")
     message, clientAddress = server.recvfrom(bufferSize)
     # Convert back to JSON
     clientMessage = message.decode()
