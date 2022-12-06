@@ -29,7 +29,7 @@ class serverUtilities:
             print(clientAddress_List[i])
             try:
                 self.server.sendto(str(jsonMessage).encode(), clientAddress_List[i])
-            except: continue
+            except: raise
             
             i += 1
         return
@@ -38,29 +38,34 @@ class serverUtilities:
     def parseJsonCommand(self, jsonCommand, clientAddress):
         command = jsonCommand['command']
         
-        if command == None:
-            self.sendClientMessage("error", "no command was received", clientAddress)
-        
         if command == "join":
-            self.client = self.serverJoin(clientAddress)
-               
-        if command == "all":
-            self.serverAll(jsonCommand, clientAddress)
-            
-        if command == "register":
-            self.serverRegister(jsonCommand, clientAddress)
+                self.client = self.serverJoin(clientAddress)
+                
         
-        #ADDED    
-        if command == "msg":
-            self.serverMsg(jsonCommand, clientAddress)
+        if(serverUtilities.lookupTable.getClientFromAddressPort(clientAddress) != None):
             
-        if command == "leave":
-            self.serverLeave(clientAddress)
-        
-        # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
-        if command == "kill":
-            return False
+            if command == None:
+                self.sendClientMessage("error", "no command was received", clientAddress)
             
+            
+            if command == "all":
+                self.serverAll(jsonCommand, clientAddress)
+                
+            if command == "register":
+                self.serverRegister(jsonCommand, clientAddress)
+            
+            #ADDED    
+            if command == "msg":
+                self.serverMsg(jsonCommand, clientAddress)
+                
+            if command == "leave":
+                self.serverLeave(clientAddress)
+            
+            # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
+            if command == "kill":
+                return False
+        else:
+            self.sendClientMessage("error", "You are not connected to the server", clientAddress)
         return True
     
     def serverLeave(self, clientAddress):
