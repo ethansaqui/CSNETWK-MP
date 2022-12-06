@@ -97,13 +97,13 @@ class serverUtilities:
         if serverUtilities.lookupTable.getClientFromHandle(reciever) != None:
             jsonMessage = {
                     "command" : "msg",
-                    "toMessage" : f"[To {reciever}]: {message}",
+                    "message" : f"[To {reciever}]: {message}",
                 }
             self.sendJsonMessage(jsonMessage, clientAddress)
             
             jsonMessage = {
                     "command" : "msg",
-                    "fromMessage": f"[From {sender}]: {message}"
+                    "message": f"[From {sender}]: {message}"
                 }
             self.sendJsonMessage(jsonMessage, receiverAddress["address"])
             return
