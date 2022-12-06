@@ -26,7 +26,6 @@ class serverUtilities:
     def sendJsonMessageAll(self, jsonMessage, clientAddress_List):
         i = 0
         while i < len(clientAddress_List):
-            print(clientAddress_List[i])
             try:
                 self.server.sendto(str(jsonMessage).encode(), clientAddress_List[i])
             except: raise
@@ -87,7 +86,6 @@ class serverUtilities:
         message = jsonCommand["message"]
         client_list = serverUtilities.lookupTable.getOtherClients(clientAddress)
         sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
-        print(client_list)
         jsonMessage = {
             "command" : "all",
             "sender" : sender,

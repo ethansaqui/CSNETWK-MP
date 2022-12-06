@@ -17,7 +17,6 @@ print("Server is listening...")
 
 continueRunning = True
 
-
 while(continueRunning):
     message, clientAddress = server.recvfrom(bufferSize)
     # Convert back to JSON

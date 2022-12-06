@@ -12,7 +12,6 @@ class lookupTable:
             "address" : addressPort,
         }
         lookupTable.table.append(newClient)
-        print(lookupTable.table)
         return
     
     def addHandle(self, addressPort, handle):
@@ -22,13 +21,11 @@ class lookupTable:
             client["handle"] = handle
         else:
             return False
-        print(lookupTable.table)
         return True
     
     def removeClient(self, addressPort):
         for client in lookupTable.table:
             if(client["address"] == addressPort):
-                print(client)
                 lookupTable.table.remove(client)
         return None
     
