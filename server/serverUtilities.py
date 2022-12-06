@@ -92,7 +92,7 @@ class serverUtilities:
         receiverAddress = serverUtilities.lookupTable.getClientFromHandle(reciever)
         
         if(receiverAddress == None):
-            self.sendClientMessage("error", "Error: Handle or alias not found", clientAddress)
+            self.sendClientMessage("error", "Handle or alias not found", clientAddress)
  
             return
         
@@ -102,11 +102,11 @@ class serverUtilities:
             self.sendClientMessage(cmd, message, clientAddress)
             
             message = f"[From {sender}]: {message}"
-            self.sendClientMessage(cmd, message, clientAddress)
+            self.sendClientMessage(cmd, message, receiverAddress)
             return
         
         #Condition: client does not exist
-        self.sendClientMessage("error", "Error: Handle or alias not found.", clientAddress)  
+        self.sendClientMessage("error", "Handle or alias not found.", clientAddress)  
         return
     
     def serverRegister(self, jsonCommand, clientAddress):
@@ -117,7 +117,6 @@ class serverUtilities:
             self.sendClientMessage(cmd, message, clientAddress) 
 
             return
-        print("failure")
-        error = f"Failure to register under handle \'{handle}\'"
+        error = f"Failure to register under handle {handle}"
         self.sendClientMessage("error", error, clientAddress) 
         return

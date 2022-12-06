@@ -151,7 +151,6 @@ class Commands:
     def parseServerMessageCommand(self, json):
         command = json["command"]
         
-        
         if command == None:
             print("[Command Not Found]")
             return
@@ -168,6 +167,9 @@ class Commands:
         
         if command == "msg":
             return "[Private]"
+        
+        if command == "error":
+            return "[Error]"
         return True           
     
     def commandHelp(self):
