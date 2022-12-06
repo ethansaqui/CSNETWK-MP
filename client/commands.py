@@ -1,4 +1,5 @@
 import socket
+import json
 
 class Commands:
     address = None
@@ -139,12 +140,35 @@ class Commands:
         while True:
             try:
                 message, address = self.receiveFromServer()
-                print(message)
+                message = message.decode()
+                messageJson = json.loads(message.replace("\'","\""))
+                command = self.parseServerMessageCommand(messageJson)
+                printMessage = messageJson["message"]
+                print(f"{command} {printMessage}")
             except:
                 continue
-
+        
+    def parseServerMessageCommand(self, json):
+        command = json["command"]
         
         
+        if command == None:
+            print("[Command Not Found]")
+            return
+            
+        if command == "join":
+            return "[Server Joined]"
+            
+        if command == "all":
+            sender = json["sender"]
+            return f"[All From {sender}]"
+            
+        if command == "register":
+            return "[Registered]"
+        
+        if command == "msg":
+            return "[Private]"
+        return True           
     
     def commandHelp(self):
         print("""    +==========================+=============================================+======================+

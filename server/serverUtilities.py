@@ -19,10 +19,12 @@ class serverUtilities:
     def sendJsonMessageAll(self, jsonMessage, clientAddress_List):
         i = 0
         while i < len(clientAddress_List):
-            print( "doing this ")
             print(clientAddress_List[i])
-            self.server.sendto(str(jsonMessage).encode(), clientAddress_List[i])
-            i+= 1
+            try:
+                self.server.sendto(str(jsonMessage).encode(), clientAddress_List[i])
+            except: continue
+            
+            i += 1
         return
     
     
@@ -31,7 +33,8 @@ class serverUtilities:
         
         if command == None:
             jsonMessage = {
-                "error" : "no command was received"
+                "command" : "error",
+                "message" : "No command was received"
             }
             self.sendJsonMessage(jsonMessage, clientAddress)
         
@@ -63,6 +66,7 @@ class serverUtilities:
             "message" : f"You have successfully connected to {self.localAddress} {self.localPort}"
         }
         self.sendJsonMessage(jsonMessage, clientAddress)
+            
         return serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
     
     def serverAll(self, jsonCommand, clientAddress):
