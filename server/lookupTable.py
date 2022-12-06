@@ -8,7 +8,7 @@ class lookupTable:
     def addClient(self, addressPort):
         clientNumber = lookupTable.table.__len__()
         newClient = {
-            "handle" : f"Client {addressPort[1]}{clientNumber}",
+            "handle" : f"Guest {addressPort[1]}{clientNumber}",
             "address" : addressPort,
         }
         lookupTable.table.append(newClient)
@@ -40,7 +40,6 @@ class lookupTable:
     def getOtherClients(self, addressPort):
         client_list = []
         for client in lookupTable.table:
-            if (client["address"] != addressPort):
-                client_list.append(client["address"])
+            client_list.append(client["address"])
         return client_list
     

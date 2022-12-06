@@ -80,9 +80,6 @@ class Commands:
         if action == "?":
             self.commandHelp()
             return
-        
-        serverResonse, serverAddress = self.receiveFromServer()
-        print(serverResonse)
 
         return
         
@@ -138,6 +135,17 @@ class Commands:
         message, address = self.client.recvfrom(self.bufferSize)
         return message, address
     
+    def threadRecvFromServer(self):
+        while True:
+            try:
+                message, address = self.receiveFromServer()
+                print(message)
+            except:
+                continue
+
+        
+        
+    
     def commandHelp(self):
         print("""    +==========================+=============================================+======================+
     |         Command          |                 Description                 |     Sample Usage     |
@@ -154,3 +162,5 @@ class Commands:
     +--------------------------+---------------------------------------------+----------------------+
     | /?                       | Display this menu                           | /?                   |
     +--------------------------+---------------------------------------------+----------------------+""")
+        
+

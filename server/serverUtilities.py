@@ -46,8 +46,7 @@ class serverUtilities:
         
         #ADDED    
         if command == "msg":
-            sender = self.client
-            self.serverMsg(jsonCommand, sender, clientAddress)    
+            self.serverMsg(jsonCommand, clientAddress)    
         
         # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
         if command == "kill":
@@ -69,30 +68,46 @@ class serverUtilities:
     def serverAll(self, jsonCommand, clientAddress):
         message = jsonCommand["message"]
         client_list = serverUtilities.lookupTable.getOtherClients(clientAddress)
+        sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
         print(client_list)
         jsonMessage = {
             "command" : "all",
+            "sender" : sender,
             "message" : f"{message}"
         }
         self.sendJsonMessageAll(jsonMessage, client_list)
-        
-        # TODO insert code to send the message to all clients in the server
         return
     
     #ADDED
-    def serverMsg(self, jsonCommand, sender, clientAddress):
+    def serverMsg(self, jsonCommand, clientAddress):
         reciever = jsonCommand["messageReceiver"]
         message = jsonCommand["message"]
+        sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
+        receiverAddress = serverUtilities.lookupTable.getClientFromHandle(reciever)
+        
+        if(receiverAddress == None):
+            jsonMessage = {
+                "command" : "msg",
+                "message" : f"Error: Handle or alias not found."
+            }
+            self.sendJsonMessage(jsonMessage, clientAddress)    
+            return
         
         #Condition: if client exists
         if serverUtilities.lookupTable.getClientFromHandle(reciever) != None:
             jsonMessage = {
                     "command" : "msg",
                     "toMessage" : f"[To {reciever}]: {message}",
-                    "fromMessage": f"[From {sender}]: {message}"
                 }
             self.sendJsonMessage(jsonMessage, clientAddress)
+            
+            jsonMessage = {
+                    "command" : "msg",
+                    "fromMessage": f"[From {sender}]: {message}"
+                }
+            self.sendJsonMessage(jsonMessage, receiverAddress["address"])
             return
+        
         #Condition: client does not exist
         jsonMessage = {
             "command" : "msg",
