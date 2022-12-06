@@ -108,14 +108,14 @@ class serverUtilities:
             self.sendClientMessage("error", "Handle or alias not found", clientAddress)
  
             return
-        
+        receiverAddress = receiverAddress["address"]
         #Condition: if client exists
         if serverUtilities.lookupTable.getClientFromHandle(reciever) != None:
-            message = f"[To {reciever}]: {message}"
-            self.sendClientMessage(cmd, message, clientAddress)
+            sendMessage = f"[To {reciever}]: {message}"
+            self.sendClientMessage(cmd, sendMessage, clientAddress)
             
-            message = f"[From {sender}]: {message}"
-            self.sendClientMessage(cmd, message, receiverAddress)
+            recMessage = f"[From {sender}]: {message}"
+            self.sendClientMessage(cmd, recMessage, receiverAddress)
             return
         
         #Condition: client does not exist
