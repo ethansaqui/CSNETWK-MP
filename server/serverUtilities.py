@@ -9,6 +9,7 @@ class serverUtilities:
         self.localPort = localPort
         self.bufferSize = bufferSize
         self.server = server
+        self.client = None #ADDED
     
     def sendJsonMessage(self, jsonMessage, clientAddress):
         self.server.sendto(str(jsonMessage).encode(), clientAddress)
@@ -24,13 +25,18 @@ class serverUtilities:
             self.sendJsonMessage(jsonMessage, clientAddress)
         
         if command == "join":
-            self.serverJoin(clientAddress)
-            
+            self.client = self.serverJoin(clientAddress)
+               
         if command == "all":
             self.serverAll(jsonCommand, clientAddress)
             
         if command == "register":
             self.serverRegister(jsonCommand, clientAddress)
+        
+        #ADDED    
+        if command == "msg":
+            sender = self.client
+            self.serverMsg(jsonCommand, sender, clientAddress)    
         
         # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
         if command == "kill":
@@ -40,14 +46,14 @@ class serverUtilities:
             
     def serverJoin(self, clientAddress):
         if not serverUtilities.lookupTable.getClientFromAddressPort(clientAddress):
-            serverUtilities.lookupTable.addClient(clientAddress)
+            serverUtilities.lookupTable.addClient(clientAddress) 
         
         jsonMessage = {
             "command" : "join",
             "message" : f"You have successfully connected to {self.localAddress} {self.localPort}"
         }
         self.sendJsonMessage(jsonMessage, clientAddress)
-        return
+        return serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
     
     def serverAll(self, jsonCommand):
         message = jsonCommand["message"]
@@ -57,6 +63,28 @@ class serverUtilities:
         }
         
         # TODO insert code to send the message to all clients in the server
+        return
+    
+    #ADDED
+    def serverMsg(self, jsonCommand, sender, clientAddress):
+        reciever = jsonCommand["messageReceiver"]
+        message = jsonCommand["message"]
+        
+        #Condition: if client exists
+        if serverUtilities.lookupTable.getClientFromHandle(reciever) != None:
+            jsonMessage = {
+                    "command" : "msg",
+                    "toMessage" : f"[To {reciever}]: {message}",
+                    "fromMessage": f"[From {sender}]: {message}"
+                }
+            self.sendJsonMessage(jsonMessage, clientAddress)
+            return
+        #Condition: client does not exist
+        jsonMessage = {
+            "command" : "msg",
+            "message" : f"Error: Handle or alias not found."
+        }
+        self.sendJsonMessage(jsonMessage, clientAddress)    
         return
     
     def serverRegister(self, jsonCommand, clientAddress):
@@ -75,4 +103,3 @@ class serverUtilities:
         }
         self.sendJsonMessage(jsonMessage, clientAddress)
         return
-    

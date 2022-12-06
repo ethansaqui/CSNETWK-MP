@@ -105,7 +105,14 @@ class Commands:
             
         return
 
+    #ADDED
     def msgCommand(self, messageReceiver, message):
+        jsonMessage = {
+            "command" : "msg",
+            "messageReceiver" : messageReceiver,
+            "message" : message,
+        }
+        self.sendJsonMessage(jsonMessage, (Commands.address, Commands.port))
         return
     
     def registerCommand(self, handle):
