@@ -54,7 +54,8 @@ class Commands:
         if Commands.isConnected:
                             
             if action == "leave":
-                self.leaveCommand()
+                if(self.checkParams("leave", len(parameters), 0)):
+                    self.leaveCommand()
                 return
             
             if action == "msg":

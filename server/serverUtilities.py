@@ -19,7 +19,6 @@ class serverUtilities:
         self.sendJsonMessage(jsonMessage, clientAddress)
     
     def sendJsonMessage(self, jsonMessage, clientAddress):
-        
         self.server.sendto(str(jsonMessage).encode(), clientAddress)
         return
 
@@ -29,7 +28,6 @@ class serverUtilities:
             try:
                 self.server.sendto(str(jsonMessage).encode(), clientAddress_List[i])
             except: raise
-            
             i += 1
         return
     
@@ -86,13 +84,18 @@ class serverUtilities:
         message = jsonCommand["message"]
         client_list = serverUtilities.lookupTable.getOtherClients(clientAddress)
         sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
-        jsonMessage = {
-            "command" : "all",
-            "sender" : sender,
-            "message" : f"{message}"
-        }
-        self.sendJsonMessageAll(jsonMessage, client_list)
-        return
+        
+        print(message)
+        if((not message.isspace()) and message != ""):
+            jsonMessage = {
+                "command" : "all",
+                "sender" : sender,
+                "message" : f"{message}"
+            }
+            self.sendJsonMessageAll(jsonMessage, client_list)
+            return
+        else:
+            self.sendClientMessage("error", "Please enter a message", clientAddress)
     
     #ADDED
     def serverMsg(self, jsonCommand, clientAddress):
@@ -104,21 +107,23 @@ class serverUtilities:
         
         if(receiverAddress == None):
             self.sendClientMessage("error", "Handle or alias not found", clientAddress)
- 
             return
+       
         receiverAddress = receiverAddress["address"]
-        #Condition: if client exists
-        if serverUtilities.lookupTable.getClientFromHandle(reciever) != None:
-            sendMessage = f"[To {reciever}]: {message}"
-            self.sendClientMessage(cmd, sendMessage, clientAddress)
-            
-            recMessage = f"[From {sender}]: {message}"
-            self.sendClientMessage(cmd, recMessage, receiverAddress)
-            return
-        
-        #Condition: client does not exist
-        self.sendClientMessage("error", "Handle or alias not found.", clientAddress)  
-        return
+        if (reciever != sender):
+            if((not message.isspace()) and message != ""): 
+                if serverUtilities.lookupTable.getClientFromHandle(reciever) != None:
+                    sendMessage = f"[To {reciever}]: {message}"
+                    self.sendClientMessage(cmd, sendMessage, clientAddress)
+                    
+                    recMessage = f"[From {sender}]: {message}"
+                    self.sendClientMessage(cmd, recMessage, receiverAddress)
+                    return
+            else:
+                self.sendClientMessage("error", "Please enter a message", clientAddress)  
+                return  
+        else:
+            self.sendClientMessage("error", "You cannot send a private message to yourself.", clientAddress)  
     
     def serverRegister(self, jsonCommand, clientAddress):
         cmd = "register"
