@@ -13,7 +13,6 @@ class Commands:
     
     def sendJsonMessage(self, jsonMessage, serverAddress):
         try:
-            print(jsonMessage)
             self.client.sendto(str(jsonMessage).encode(), serverAddress)
         except Exception as e: print(e)
             
