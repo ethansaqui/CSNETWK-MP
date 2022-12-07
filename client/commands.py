@@ -23,12 +23,12 @@ class Commands:
         if(commandString[0] == '/'):
             return commandString[1:].split(' ')
         else:
-            print("Invalid command! Start commands with a /")   
+            print("[Error] Invalid command! Start commands with a /")   
         
     def checkParams(self, command, numParams, expectedParams):
         if numParams == expectedParams:
             return True
-        print(f"Error: Expected {expectedParams} params for command [{command}], but {numParams} were given")
+        print(f"[Error] Expected {expectedParams} params for command [{command}], but {numParams} were given")
         return False
 
     def commandSwitch(self, command):
@@ -36,7 +36,7 @@ class Commands:
             return
         
         if command[0] not in self.commandList:
-            print("Invalid command!")
+            print("[Error] Invalid command!")
             return
         
         action = command[0]
@@ -59,11 +59,12 @@ class Commands:
                 return
             
             if action == "msg":
-                receiverName = command[1]
-                message = ' '.join(command[2:])
-                parameters = [receiverName, message]
-                if(self.checkParams("msg", len(parameters), 2)):
-                    self.msgCommand(parameters[0], parameters[1])
+                parameters = len(command) - 1
+                
+                if(self.checkParams("msg", parameters, 2)):
+                    receiverName = command[1]
+                    message = ' '.join(command[2:])
+                    self.msgCommand(receiverName, message)
                     
             if action == "register":
                 if(self.checkParams("register", len(parameters), 1)):
@@ -81,12 +82,17 @@ class Commands:
                 }
                 self.client.sendto(str(jsonMessage).encode(), (Commands.address, int(Commands.port)))
         else:
-            print("Connect to a server first!")
+            print("[Error] Connect to a server first!")
 
         return
         
     def joinCommand(self, address, port):
-        destinationServer = (address, int(port))
+        try:
+            destinationServer = (address, int(port))
+        except Exception as error:
+            print("[Error] Invalid address port")
+            return
+            
     
         try:
             jsonMessage = {
@@ -146,8 +152,8 @@ class Commands:
         }
         try:
             self.sendJsonMessage(jsonMessage, (Commands.address, Commands.port))
-        except socket.error as error:
-            print(f"Message Send Error: {error}")
+        except Exception as error:
+            print(f"[Message Send Error] {error}")
         return
 
     def receiveFromServer(self):
@@ -178,7 +184,7 @@ class Commands:
             
         if command == "all":
             sender = json["sender"]
-            return f"[All From {sender}]"
+            return f"{sender}"
             
         if command == "register":
             return "[Registered]"
