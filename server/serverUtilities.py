@@ -142,7 +142,7 @@ class serverUtilities:
             return 
         
         if(serverUtilities.lookupTable.addHandle(clientAddress, handle)):
-            message = f"[Error] Successful registration! Welcome {handle}"
+            message = f"Successful registration! Welcome {handle}"
             self.sendClientMessage(message, clientAddress) 
             return
         
