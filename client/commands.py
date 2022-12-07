@@ -9,7 +9,7 @@ class Commands:
     def __init__(self, client, bufferSize):
         self.bufferSize = bufferSize
         self.client = client
-        self.commandList = ['join', 'leave', 'msg', 'register', 'all', '?', 'kill']
+        self.commandList = ['join', 'leave', 'msg', 'register', 'all', '?']
     
     def sendJsonMessage(self, jsonMessage, serverAddress):
         try:
