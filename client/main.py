@@ -18,11 +18,12 @@ while(clientRunning):
         try:
             commandString = input('')
         except KeyboardInterrupt:
+           
             clientCommands.leaveCommand()
             clientRunning = False
+            print("Exited client")
             break
-    if clientRunning == False:
-        break
+
     command = clientCommands.tokenizeCommandString(commandString)
     clientCommands.commandSwitch(command)
     
@@ -30,7 +31,8 @@ while(clientRunning):
     thread.daemon = True
     thread.start()
     
-    
+    if clientRunning == False:
+        break
     
 
 client.close()
