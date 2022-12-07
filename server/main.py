@@ -4,7 +4,7 @@ import json
 
 
 localAddress = "127.0.0.1"
-localPort = 5000
+localPort = 12345
 bufferSize = 1024
 
 server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

@@ -11,9 +11,8 @@ class serverUtilities:
         self.bufferSize = bufferSize
         self.server = server
         
-    def sendClientMessage(self, command, message, clientAddress):
+    def sendClientMessage(self, message, clientAddress):
         jsonMessage = {
-            "command" : command,
             "message" : message,
         }
         self.sendJsonMessage(jsonMessage, clientAddress)
@@ -38,7 +37,7 @@ class serverUtilities:
         command = jsonCommand['command']
         
         if command == None:
-            self.sendClientMessage("error", "no command was received", clientAddress)
+            self.sendClientMessage("[Error] No command was received", clientAddress)
         
         if command == "join":
             self.client = self.serverJoin(clientAddress)
@@ -62,22 +61,20 @@ class serverUtilities:
             if command == "kill":
                 return False
         else:
-            self.sendClientMessage("error", "You are not connected to the server", clientAddress)
+            self.sendClientMessage("[Error] You are not connected to the server", clientAddress)
         return True
     
     def serverLeave(self, clientAddress):
-        self.sendClientMessage("leave", "Connection has been closed, どうも", clientAddress)
+        self.sendClientMessage("[Server] Connection has been closed, どうも", clientAddress)
         serverUtilities.lookupTable.removeClient(clientAddress)
         return
             
     def serverJoin(self, clientAddress):
-        cmd = "join"
-        
         if not serverUtilities.lookupTable.getClientFromAddressPort(clientAddress):
             serverUtilities.lookupTable.addClient(clientAddress) 
             
-        message = f"You have successfully connected to {self.localAddress} {self.localPort}"
-        self.sendClientMessage(cmd, message, clientAddress)
+        message = f"[Server] You have successfully connected to {self.localAddress} {self.localPort}"
+        self.sendClientMessage(message, clientAddress)
             
         return 
     
@@ -88,37 +85,35 @@ class serverUtilities:
         sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
         
         if(not client["registered"]):
-            self.sendClientMessage("error", "Message not sent. Please register first.", clientAddress)
+            self.sendClientMessage("[Error] Message not sent. Please register first.", clientAddress)
             return
         
         if((not message.isspace()) and message != ""):
             print("entered sending part")
             jsonMessage = {
                 "command" : "all",
-                "sender" : sender,
-                "message" : message
+                "message" : f"{sender}: {message}"
             }
             print("test")
             self.sendJsonMessageAll(jsonMessage, client_list)
             return
         else:
-            self.sendClientMessage("error", "Please enter a message", clientAddress)
+            self.sendClientMessage("[Error] Please enter a message", clientAddress)
     
     #ADDED
     def serverMsg(self, jsonCommand, clientAddress):
-        cmd = "msg"
-        reciever = jsonCommand["messageReceiver"]
+        reciever = jsonCommand["handle"]
         message = jsonCommand["message"]
         client = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)
         sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
         receiverAddress = serverUtilities.lookupTable.getClientFromHandle(reciever)
 
         if(not client["registered"]):
-            self.sendClientMessage("error", "Message not sent. Please register first.", clientAddress)
+            self.sendClientMessage("[Error] Message not sent. Please register first.", clientAddress)
             return
             
         if(receiverAddress == None):
-            self.sendClientMessage("error", "Handle or alias not found", clientAddress)
+            self.sendClientMessage("[Error] Handle or alias not found", clientAddress)
             return
        
         receiverAddress = receiverAddress["address"]
@@ -126,31 +121,31 @@ class serverUtilities:
             if((not message.isspace()) and message != ""): 
                 if serverUtilities.lookupTable.getClientFromHandle(reciever) != None:
                     sendMessage = f"[To {reciever}]: {message}"
-                    self.sendClientMessage(cmd, sendMessage, clientAddress)
+                    self.sendClientMessage(sendMessage, clientAddress)
                     
                     recMessage = f"[From {sender}]: {message}"
-                    self.sendClientMessage(cmd, recMessage, receiverAddress)
+                    self.sendClientMessage(recMessage, receiverAddress)
                     return
             else:
-                self.sendClientMessage("error", "Please enter a message", clientAddress)  
+                self.sendClientMessage("[Error] Please enter a message", clientAddress)  
                 return  
         else:
-            self.sendClientMessage("error", "You cannot send a private message to yourself.", clientAddress)  
+            self.sendClientMessage("[Error] You cannot send a private message to yourself.", clientAddress)  
     
     def serverRegister(self, jsonCommand, clientAddress):
         cmd = "register"
         handle = jsonCommand["handle"]
         
         if(serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["registered"]):
-            error = f"You are already registered"
-            self.sendClientMessage("error", error, clientAddress) 
+            error = f"[Error] You are already registered"
+            self.sendClientMessage(error, clientAddress) 
             return 
         
         if(serverUtilities.lookupTable.addHandle(clientAddress, handle)):
-            message = f"Successful registration! Welcome {handle}"
-            self.sendClientMessage(cmd, message, clientAddress) 
+            message = f"[Error] Successful registration! Welcome {handle}"
+            self.sendClientMessage(message, clientAddress) 
             return
         
-        error = f"Failure to register under handle {handle}"
-        self.sendClientMessage("error", error, clientAddress) 
+        error = f"[Error] Failure to register under handle {handle}"
+        self.sendClientMessage(error, clientAddress) 
         return

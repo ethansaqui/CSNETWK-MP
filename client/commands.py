@@ -108,8 +108,7 @@ class Commands:
             message = message.decode()
             messageJson = json.loads(message)
             printMessage = messageJson["message"]
-            command = self.parseServerMessageCommand(messageJson)
-            print(f"{command} {printMessage}")
+            print(f"{printMessage}")
             
             Commands.address = address
             Commands.port = int(port)
@@ -134,7 +133,7 @@ class Commands:
     def msgCommand(self, messageReceiver, message):
         jsonMessage = {
             "command" : "msg",
-            "messageReceiver" : messageReceiver,
+            "handle" : messageReceiver,
             "message" : message,
         }
         self.sendJsonMessage(jsonMessage, (Commands.address, Commands.port))
@@ -169,40 +168,11 @@ class Commands:
                 message, address = self.receiveFromServer()
                 message = message.decode()
                 messageJson = json.loads(message)
-                command = self.parseServerMessageCommand(messageJson)
                 printMessage = messageJson["message"]
-                print(f"{command} {printMessage}")
+                print(f"{printMessage}")
             except:
                 continue
-        
-    def parseServerMessageCommand(self, json):
-        command = json["command"]
-        
-        if command == None:
-            print("[Command Not Found]")
-            return
-            
-        if command == "join":
-            return "[Server Joined]"
-            
-        if command == "all":
-            sender = json["sender"]
-            return f"{sender}:"
-            
-        if command == "register":
-            return "[Registered]"
-        
-        if command == "msg":
-            return "[Private]"
-        
-        if command == "leave":
-            return "[Server Exited]"
-        
-        if command == "error":
-            return "[Error]"
-        
-        
-        return True           
+                
     
     def commandHelp(self):
         print("""    +==========================+=============================================+======================+
