@@ -73,7 +73,7 @@ class serverUtilities:
         if not serverUtilities.lookupTable.getClientFromAddressPort(clientAddress):
             serverUtilities.lookupTable.addClient(clientAddress) 
             
-        message = f"[Server] You have successfully connected to {self.localAddress} {self.localPort}"
+        message = f"[Server] You have successfully connected to {self.localAddress} {self.localPort} Message Board"
         self.sendClientMessage(message, clientAddress)
             
         return 
