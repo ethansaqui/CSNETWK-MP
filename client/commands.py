@@ -47,6 +47,10 @@ class Commands:
                 self.joinCommand(parameters[0], parameters[1])
             return
         
+        if action == "?":
+            self.commandHelp()
+            return        
+        
         if Commands.isConnected:
                             
             if action == "leave":
@@ -77,10 +81,6 @@ class Commands:
                 self.client.sendto(str(jsonMessage).encode(), (Commands.address, int(Commands.port)))
         else:
             print("Connect to a server first!")
-            
-        if action == "?":
-            self.commandHelp()
-            return
 
         return
         
