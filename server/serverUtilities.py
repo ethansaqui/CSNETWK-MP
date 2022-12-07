@@ -9,7 +9,6 @@ class serverUtilities:
         self.localPort = localPort
         self.bufferSize = bufferSize
         self.server = server
-        self.client = None
         
     def sendClientMessage(self, command, message, clientAddress):
         jsonMessage = {
@@ -35,15 +34,13 @@ class serverUtilities:
     def parseJsonCommand(self, jsonCommand, clientAddress):
         command = jsonCommand['command']
         
+        if command == None:
+            self.sendClientMessage("error", "no command was received", clientAddress)
+        
         if command == "join":
-                self.client = self.serverJoin(clientAddress)
-                
+            self.client = self.serverJoin(clientAddress)
         
         if(serverUtilities.lookupTable.getClientFromAddressPort(clientAddress) != None):
-            
-            if command == None:
-                self.sendClientMessage("error", "no command was received", clientAddress)
-            
             
             if command == "all":
                 self.serverAll(jsonCommand, clientAddress)
@@ -72,20 +69,25 @@ class serverUtilities:
             
     def serverJoin(self, clientAddress):
         cmd = "join"
+        
         if not serverUtilities.lookupTable.getClientFromAddressPort(clientAddress):
             serverUtilities.lookupTable.addClient(clientAddress) 
-        
+            
         message = f"You have successfully connected to {self.localAddress} {self.localPort}"
         self.sendClientMessage(cmd, message, clientAddress)
             
-        return serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
+        return 
     
     def serverAll(self, jsonCommand, clientAddress):
         message = jsonCommand["message"]
         client_list = serverUtilities.lookupTable.getOtherClients(clientAddress)
+        client = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)
         sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
         
-        print(message)
+        if(not client["registered"]):
+            self.sendClientMessage("error", "Message not sent. Please register first.", clientAddress)
+            return
+        
         if((not message.isspace()) and message != ""):
             jsonMessage = {
                 "command" : "all",
@@ -102,9 +104,14 @@ class serverUtilities:
         cmd = "msg"
         reciever = jsonCommand["messageReceiver"]
         message = jsonCommand["message"]
+        client = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)
         sender = serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["handle"]
         receiverAddress = serverUtilities.lookupTable.getClientFromHandle(reciever)
-        
+
+        if(not client["registered"]):
+            self.sendClientMessage("error", "Message not sent. Please register first.", clientAddress)
+            return
+            
         if(receiverAddress == None):
             self.sendClientMessage("error", "Handle or alias not found", clientAddress)
             return
@@ -128,11 +135,12 @@ class serverUtilities:
     def serverRegister(self, jsonCommand, clientAddress):
         cmd = "register"
         handle = jsonCommand["handle"]
+        
         if(serverUtilities.lookupTable.addHandle(clientAddress, handle)):
             message = f"Successful registration! Welcome {handle}"
             self.sendClientMessage(cmd, message, clientAddress) 
-
             return
+        
         error = f"Failure to register under handle {handle}"
         self.sendClientMessage("error", error, clientAddress) 
         return

@@ -10,6 +10,7 @@ class lookupTable:
         newClient = {
             "handle" : f"Guest {addressPort[1]}{clientNumber}",
             "address" : addressPort,
+            "registered": False
         }
         lookupTable.table.append(newClient)
         return
@@ -19,6 +20,7 @@ class lookupTable:
         isExist = self.getClientFromHandle(handle)
         if client != None and handle != client["handle"] and isExist == None:
             client["handle"] = handle
+            client["registered"]= True
         else:
             return False
         return True
