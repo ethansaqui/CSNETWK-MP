@@ -21,7 +21,8 @@ while(clientRunning):
             clientCommands.leaveCommand()
             clientRunning = False
             break
-
+    if clientRunning == False:
+        break
     command = clientCommands.tokenizeCommandString(commandString)
     clientCommands.commandSwitch(command)
     
@@ -29,8 +30,7 @@ while(clientRunning):
     thread.daemon = True
     thread.start()
     
-    if clientRunning == False:
-        break
+    
     
 
 client.close()
