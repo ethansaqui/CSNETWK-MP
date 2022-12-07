@@ -106,7 +106,7 @@ class Commands:
             self.sendJsonMessage(jsonMessage, destinationServer)
             message, senderAddress = self.receiveFromServer()
             message = message.decode()
-            messageJson = json.loads(message.replace("\'","\""))
+            messageJson = json.loads(message)
             printMessage = messageJson["message"]
             command = self.parseServerMessageCommand(messageJson)
             print(f"{command} {printMessage}")
@@ -168,7 +168,7 @@ class Commands:
             try:
                 message, address = self.receiveFromServer()
                 message = message.decode()
-                messageJson = json.loads(message.replace("\'","\""))
+                messageJson = json.loads(message)
                 command = self.parseServerMessageCommand(messageJson)
                 printMessage = messageJson["message"]
                 print(f"{command} {printMessage}")
