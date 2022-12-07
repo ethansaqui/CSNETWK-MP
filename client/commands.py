@@ -42,12 +42,13 @@ class Commands:
         if action == "join":
             if(self.checkParams("join", len(parameters), 2)):
                 self.joinCommand(parameters[0], parameters[1])
-                
-        if action == "leave":
-            self.leaveCommand()
-            return
         
         if Commands.isConnected:
+                            
+            if action == "leave":
+                self.leaveCommand()
+                return
+            
             if action == "msg":
                 receiverName = command[1]
                 message = ' '.join(command[2:])
@@ -66,8 +67,6 @@ class Commands:
             
             #FOR DEBUG PURPOSES ONLY, REMOVE AFTER
             if action == "kill":
-                print(Commands.address)
-                print(Commands.port)
                 jsonMessage = {
                     "command" : "kill"
                 }
@@ -89,14 +88,21 @@ class Commands:
                 "command": "join",
             }
             self.client.settimeout(5)
+
             self.sendJsonMessage(jsonMessage, destinationServer)
+            message, senderAddress = self.receiveFromServer()
+            message = message.decode()
+            messageJson = json.loads(message.replace("\'","\""))
+            printMessage = messageJson["message"]
+            command = self.parseServerMessageCommand(messageJson)
+            print(f"{command} {printMessage}")
             
             Commands.address = address
             Commands.port = int(port)
             Commands.isConnected = True
             
         except socket.error as error:
-            print(f"Connection Error: {error}")
+           print("[Connection Error] Server does not exist")
             
         return
 
