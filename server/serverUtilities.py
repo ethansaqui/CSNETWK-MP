@@ -57,9 +57,6 @@ class serverUtilities:
             if command == "leave":
                 self.serverLeave(clientAddress)
             
-            # FOR DEBUG PURPOSES ONLY, REMOVE AFTER 
-            if command == "kill":
-                return False
         else:
             self.sendClientMessage("[Error] You are not connected to the server", clientAddress)
         return True
@@ -142,7 +139,7 @@ class serverUtilities:
             return 
         
         if(serverUtilities.lookupTable.addHandle(clientAddress, handle)):
-            message = f"Successful registration! Welcome {handle}"
+            message = f"[Server] Successful registration! Welcome {handle}"
             self.sendClientMessage(message, clientAddress) 
             return
         

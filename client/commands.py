@@ -77,13 +77,7 @@ class Commands:
             if action == "all":
                 message = ' '.join(command[1:])
                 self.allCommand(message)
-            
-            #FOR DEBUG PURPOSES ONLY, REMOVE AFTER
-            if action == "kill":
-                jsonMessage = {
-                    "command" : "kill"
-                }
-                self.client.sendto(str(jsonMessage).encode(), (Commands.address, int(Commands.port)))
+    
         else:
             print("[Error] Connect to a server first!")
 
