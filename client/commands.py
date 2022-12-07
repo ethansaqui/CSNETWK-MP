@@ -12,7 +12,10 @@ class Commands:
         self.commandList = ['join', 'leave', 'msg', 'register', 'all', '?', 'kill']
     
     def sendJsonMessage(self, jsonMessage, serverAddress):
-        self.client.sendto(str(jsonMessage).encode(), serverAddress)
+        try:
+            self.client.sendto(str(jsonMessage).encode(), serverAddress)
+        except Exception as e: print(e)
+            
         return
     
     def tokenizeCommandString(self, commandString):
@@ -42,6 +45,7 @@ class Commands:
         if action == "join":
             if(self.checkParams("join", len(parameters), 2)):
                 self.joinCommand(parameters[0], parameters[1])
+            return
         
         if Commands.isConnected:
                             
