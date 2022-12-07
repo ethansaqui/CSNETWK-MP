@@ -20,8 +20,9 @@ continueRunning = True
 while(continueRunning):
     message, clientAddress = server.recvfrom(bufferSize)
     # Convert back to JSON
+    print(message)
     clientMessage = message.decode()
-    clientMessage = json.loads(clientMessage.replace("\'","\""))
+    clientMessage = json.loads(clientMessage)
     
     continueRunning = utils.parseJsonCommand(clientMessage, clientAddress)
 server.close()

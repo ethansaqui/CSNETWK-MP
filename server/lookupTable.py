@@ -46,6 +46,7 @@ class lookupTable:
     def getOtherClients(self, addressPort):
         client_list = []
         for client in lookupTable.table:
-            client_list.append(client["address"])
+            if client["registered"]:
+                client_list.append(client["address"])
         return client_list
     

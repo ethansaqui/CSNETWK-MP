@@ -13,8 +13,9 @@ class Commands:
     
     def sendJsonMessage(self, jsonMessage, serverAddress):
         try:
-            self.client.sendto(str(jsonMessage).encode(), serverAddress)
-        except Exception as e: print(e)
+            jsonString = json.dumps(jsonMessage)
+            self.client.sendto(jsonString.encode(), serverAddress)
+        except Exception as e: print(f"[Error] {e}")
             
         return
     
@@ -26,6 +27,8 @@ class Commands:
             print("[Error] Invalid command! Start commands with a /")   
         
     def checkParams(self, command, numParams, expectedParams):
+        if command == "msg" and numParams > 2:
+            return True
         if numParams == expectedParams:
             return True
         print(f"[Error] Expected {expectedParams} params for command [{command}], but {numParams} were given")
@@ -184,7 +187,7 @@ class Commands:
             
         if command == "all":
             sender = json["sender"]
-            return f"{sender}"
+            return f"{sender}:"
             
         if command == "register":
             return "[Registered]"

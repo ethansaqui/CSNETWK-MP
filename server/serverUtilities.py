@@ -1,5 +1,6 @@
 import socket
 import lookupTable
+import json
 
 class serverUtilities:
     lookupTable = lookupTable.lookupTable()
@@ -18,14 +19,16 @@ class serverUtilities:
         self.sendJsonMessage(jsonMessage, clientAddress)
     
     def sendJsonMessage(self, jsonMessage, clientAddress):
-        self.server.sendto(str(jsonMessage).encode(), clientAddress)
+        jsonString = json.dumps(jsonMessage)
+        self.server.sendto(jsonString.encode(), clientAddress)
         return
 
     def sendJsonMessageAll(self, jsonMessage, clientAddress_List):
         i = 0
+        jsonString = json.dumps(jsonMessage)
         while i < len(clientAddress_List):
             try:
-                self.server.sendto(str(jsonMessage).encode(), clientAddress_List[i])
+                self.server.sendto(jsonString.encode(), clientAddress_List[i])
             except: raise
             i += 1
         return
@@ -89,11 +92,13 @@ class serverUtilities:
             return
         
         if((not message.isspace()) and message != ""):
+            print("entered sending part")
             jsonMessage = {
                 "command" : "all",
                 "sender" : sender,
-                "message" : f"{message}"
+                "message" : message
             }
+            print("test")
             self.sendJsonMessageAll(jsonMessage, client_list)
             return
         else:
@@ -135,6 +140,11 @@ class serverUtilities:
     def serverRegister(self, jsonCommand, clientAddress):
         cmd = "register"
         handle = jsonCommand["handle"]
+        
+        if(serverUtilities.lookupTable.getClientFromAddressPort(clientAddress)["registered"]):
+            error = f"You are already registered"
+            self.sendClientMessage("error", error, clientAddress) 
+            return 
         
         if(serverUtilities.lookupTable.addHandle(clientAddress, handle)):
             message = f"Successful registration! Welcome {handle}"
